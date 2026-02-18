@@ -1,7 +1,26 @@
-```markdown
 <div align="center">
 
-# 🌐 Notiobsidian 双语文档切换
+# 🌐 Notiobsidian
+
+<p align="center">
+  <a href="https://github.com/NanamiChiaki-7/Notiobsidian/stargazers">
+    <img src="https://img.shields.io/github/stars/NanamiChiaki-7/Notiobsidian?style=for-the-badge&color=6b7280&logo=github&logoColor=white" alt="Stars"/>
+  </a>
+  <a href="https://github.com/NanamiChiaki-7/Notiobsidian/forks">
+    <img src="https://img.shields.io/github/forks/NanamiChiaki-7/Notiobsidian?style=for-the-badge&color=10b981&logo=github&logoColor=white" alt="Forks"/>
+  </a>
+  <a href="https://github.com/NanamiChiaki-7/Notiobsidian/issues">
+    <img src="https://img.shields.io/github/issues/NanamiChiaki-7/Notiobsidian?style=for-the-badge&color=f59e0b" alt="Issues"/>
+  </a>
+  <a href="https://github.com/NanamiChiaki-7/Notiobsidian/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/NanamiChiaki-7/Notiobsidian?style=for-the-badge&color=8b5cf6" alt="MIT License"/>
+  </a>
+  <img src="https://img.shields.io/badge/Python-3.8+-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python"/>
+  <img src="https://img.shields.io/badge/Flask-2.x-000000?style=for-the-badge&logo=flask&logoColor=white" alt="Flask"/>
+  <img src="https://img.shields.io/badge/Obsidian_DNA-Local%20First-7c3aed?style=for-the-badge" alt="Local First"/>
+  <img src="https://img.shields.io/badge/Notion_UI-Inspired-ff79c6?style=for-the-badge" alt="Notion Style"/>
+</p>
+
 
 [⬇️ 跳转到中文区](#-中文版) · [⬇️ Jump to English](#-english-version)
 
@@ -37,25 +56,6 @@
 <p align="center">
   <br/>
   <sub>本地优先 · 可编程 · Agent-ready 的下一代个人工作空间</sub>
-</p>
-
-<p align="center">
-  <a href="https://github.com/NanamiChiaki-7/Notiobsidian/stargazers">
-    <img src="https://img.shields.io/github/stars/NanamiChiaki-7/Notiobsidian?style=for-the-badge&color=6b7280&logo=github&logoColor=white" alt="Stars"/>
-  </a>
-  <a href="https://github.com/NanamiChiaki-7/Notiobsidian/forks">
-    <img src="https://img.shields.io/github/forks/NanamiChiaki-7/Notiobsidian?style=for-the-badge&color=10b981&logo=github&logoColor=white" alt="Forks"/>
-  </a>
-  <a href="https://github.com/NanamiChiaki-7/Notiobsidian/issues">
-    <img src="https://img.shields.io/github/issues/NanamiChiaki-7/Notiobsidian?style=for-the-badge&color=f59e0b" alt="Issues"/>
-  </a>
-  <a href="https://github.com/NanamiChiaki-7/Notiobsidian/blob/main/LICENSE">
-    <img src="https://img.shields.io/github/license/NanamiChiaki-7/Notiobsidian?style=for-the-badge&color=8b5cf6" alt="MIT License"/>
-  </a>
-  <img src="https://img.shields.io/badge/Python-3.8+-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python"/>
-  <img src="https://img.shields.io/badge/Flask-2.x-000000?style=for-the-badge&logo=flask&logoColor=white" alt="Flask"/>
-  <img src="https://img.shields.io/badge/Obsidian_DNA-Local%20First-7c3aed?style=for-the-badge" alt="Local First"/>
-  <img src="https://img.shields.io/badge/Notion_UI-Inspired-ff79c6?style=for-the-badge" alt="Notion Style"/>
 </p>
 
 <h1 align="center">Notiobsidian</h1>
@@ -187,27 +187,6 @@
   <br/>
   <sub>Local-first · Programmable · Agent-ready Next-Gen Personal Workspace</sub>
 </p>
-
-<p align="center">
-  <a href="https://github.com/NanamiChiaki-7/Notiobsidian/stargazers">
-    <img src="https://img.shields.io/github/stars/NanamiChiaki-7/Notiobsidian?style=for-the-badge&color=6b7280&logo=github&logoColor=white" alt="Stars"/>
-  </a>
-  <a href="https://github.com/NanamiChiaki-7/Notiobsidian/forks">
-    <img src="https://img.shields.io/github/forks/NanamiChiaki-7/Notiobsidian?style=for-the-badge&color=10b981&logo=github&logoColor=white" alt="Forks"/>
-  </a>
-  <a href="https://github.com/NanamiChiaki-7/Notiobsidian/issues">
-    <img src="https://img.shields.io/github/issues/NanamiChiaki-7/Notiobsidian?style=for-the-badge&color=f59e0b" alt="Issues"/>
-  </a>
-  <a href="https://github.com/NanamiChiaki-7/Notiobsidian/blob/main/LICENSE">
-    <img src="https://img.shields.io/github/license/NanamiChiaki-7/Notiobsidian?style=for-the-badge&color=8b5cf6" alt="MIT License"/>
-  </a>
-  <img src="https://img.shields.io/badge/Python-3.8+-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python"/>
-  <img src="https://img.shields.io/badge/Flask-2.x-000000?style=for-the-badge&logo=flask&logoColor=white" alt="Flask"/>
-  <img src="https://img.shields.io/badge/Obsidian_DNA-Local%20First-7c3aed?style=for-the-badge" alt="Local First"/>
-  <img src="https://img.shields.io/badge/Notion_UI-Inspired-ff79c6?style=for-the-badge" alt="Notion Style"/>
-</p>
-
-<h1 align="center">Notiobsidian</h1>
 
 <p align="center">
   <strong>Combining Notion's interactive aesthetics + Obsidian's local freedom + Native AI Agent interface</strong><br/>
