@@ -127,14 +127,4 @@
 - Logseq / Anytype：本地优先社区的各种灵感
 - Flask + vis-network + marked.js + Chart.js 等开源英雄
 
-
-
 最后更新：2026 年 2 月
-
-5. **开源后下一步**  
-   - 改成环境变量读取密码（os.getenv）
-   - 加 CONTRIBUTING.md（哪怕就一句话）
-   - 打上 topics：productivity, self-hosted, notion-alternative, obsidian, local-first, knowledge-base
-
-直接复制上面内容到 README.md，改几处个人信息和截图链接，就能发出来了。  
-发完后可以贴链接给我，我帮你再看看整体观感～ 冲！🚀
