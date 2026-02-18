@@ -1,5 +1,4 @@
 <p align="center">
-  <img src="https://via.placeholder.com/1200x400/6366f1/ffffff?text=Notiobsidian+-+Your+Local+AI-Native+Workspace" alt="Notiobsidian Banner" width="800"/>
   <br/>
   <sub>本地优先 · 可编程 · Agent-ready 的下一代个人工作空间</sub>
 </p>
@@ -56,16 +55,8 @@
 
 ## 📸 截图预览（替换成你本地的真实截图！）
 
-<p align="center">
-  <img src="https://via.placeholder.com/800x450/1e293b/ffffff?text=Dashboard+&+Sidebar" alt="Sidebar & Dashboard" width="45%"/>
-  <img src="https://via.placeholder.com/800x450/1e293b/ffffff?text=Daily+Tracker+with+Charts" alt="Tracker" width="45%"/>
-</p>
-<p align="center">
-  <img src="https://via.placeholder.com/800x450/1e293b/ffffff?text=Knowledge+Graph+View" alt="Graph View" width="45%"/>
-  <img src="https://via.placeholder.com/800x450/1e293b/ffffff?text=Calendar+Events" alt="Calendar" width="45%"/>
-</p>
+<p align="center"> <img src="./screenshot/test (1).png" alt="Sidebar & Dashboard" width="45%"/> <img src="./screenshot/test (2).png" alt="Daily Tracker with Charts" width="45%"/> </p> <p align="center"> <img src="./screenshot/test (3).png" alt="Knowledge Graph View" width="45%"/> <img src="./screenshot/test (4).png" alt="Calendar Events" width="45%"/> </p>
 
-> **提示**：把你最满意的 4–6 张截图上传到仓库的 `screenshots/` 文件夹，然后替换上面的 placeholder 链接。推荐用 carbon.now.sh 生成代码美图，或者录个 10s GIF 放首页。
 
 ## 🚀 快速开始（3 分钟跑起来）
 
