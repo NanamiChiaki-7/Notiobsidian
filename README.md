@@ -2,6 +2,8 @@
 
 # 🌐 Notiobsidian
 
+![](https://count.getloli.com/get/@NanamiChiaki-7?name=NanamiChiaki-7&theme=rule34&padding=7&offset=0&align=top&scale=1&pixelated=1&darkmode=auto)
+
 <p align="center">
   <a href="https://github.com/NanamiChiaki-7/Notiobsidian/stargazers">
     <img src="https://img.shields.io/github/stars/NanamiChiaki-7/Notiobsidian?style=for-the-badge&color=6b7280&logo=github&logoColor=white" alt="Stars"/>
