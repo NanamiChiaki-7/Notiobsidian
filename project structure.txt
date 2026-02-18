@@ -1,0 +1,39 @@
+.
+├── app
+│   ├── extensions.py
+│   ├── __init__.py
+│   ├── models
+│   │   └── page.py
+│   ├── routes
+│   │   ├── api.py
+│   │   ├── auth.py
+│   │   ├── __init__.py
+│   │   ├── main.py
+│   │   └── websocket.py
+│   ├── socket.py
+│   ├── utils
+│   │   └── helpers.py
+│   └── websocket.py
+├── Notiobsidian.py
+├── readme.txt
+├── requirements.txt
+├── static
+│   ├── css
+│   │   ├── all.min.css
+│   │   ├── style.css
+│   │   └── tailwind.min.css
+│   ├── favicon.ico
+│   ├── js
+│   │   ├── analytics.js
+│   │   ├── calendar.js
+│   │   ├── graph.js
+│   │   ├── lib
+│   │   ├── main.js
+│   │   ├── parser.js
+│   │   ├── sidebar.js
+│   │   ├── tracker.js
+│   │   └── websocket.js
+│   └── uploads
+└── templates
+    ├── index.html
+    └── login.html

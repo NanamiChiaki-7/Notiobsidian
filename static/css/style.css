@@ -1,0 +1,561 @@
+:root { --text: #37352f; --bg: #ffffff; --border: #e5e7eb; --select-bg: #edf5fd; }
+body { font-family: 'Inter', sans-serif; color: var(--text); background: var(--bg); }
+
+.main-scroll-area { height: 100vh; overflow-y: auto; position: relative; }
+.cover-container { width: 100%; height: 180px; position: relative; flex-shrink: 0; background-size: cover; background-position: center; }
+.page-header-wrapper { position: relative; width: 100%; padding-top: 48px; }
+
+.page-icon-wrapper { position: absolute; top: -60px; left: 48px; z-index: 30; }
+@media (min-width: 640px) { .page-icon-wrapper { left: 96px; } }
+
+.notion-block { border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 16px; background: white; }
+
+/* Markdown Styles */
+.markdown-editor { width: 100%; min-height: 300px; font-family: 'Fira Code', monospace; resize: vertical; border: 1px inset #eee; outline: none; background: #fafafa; padding: 15px; border-radius: 4px; line-height: 1.5; }
+.markdown-preview { min-height: 100px; line-height: 1.7; }
+.markdown-preview h1 { font-size: 2.25em; font-weight: 800; margin-bottom: 0.8em; border-bottom: 1px solid #eee; padding-bottom: 0.2em; }
+.markdown-preview h2 { font-size: 1.75em; font-weight: 700; margin-top: 1.2em; margin-bottom: 0.6em; }
+.markdown-preview ul { list-style-type: disc; padding-left: 25px; margin-bottom: 1em; }
+.markdown-preview blockquote { border-left: 4px solid #e5e7eb; padding-left: 16px; color: #6b7280; font-style: italic; margin: 1em 0; }
+
+.markdown-preview hr {
+    border: none;
+    height: 2px;
+    background-color: #718096;  /* 较深的灰色 */
+    margin: 1rem 0;
+}
+/* New Components Styles */
+.notion-tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; background-color: #e3e2e0; color: #505558; margin: 0 2px; }
+.notion-link { color: #2383e2; text-decoration: none; border-bottom: 1px solid rgba(35, 131, 226, 0.2); transition: all 0.2s; cursor: pointer; }
+.notion-link:hover { background-color: rgba(35, 131, 226, 0.1); }
+.notion-media { max-width: 100%; border-radius: 8px; margin: 10px 0; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+
+/* Upload Placeholder */
+.media-upload-placeholder {
+    width: 100%; height: 120px; background: #f9fafb; border: 2px dashed #e5e7eb; border-radius: 8px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    color: #9ca3af; cursor: pointer; transition: all 0.2s; margin: 10px 0;
+}
+.media-upload-placeholder:hover { background: #f3f4f6; border-color: #d1d5db; color: #6b7280; }
+.media-upload-placeholder i { font-size: 24px; margin-bottom: 8px; }
+
+/* Calendar Styles */
+.calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; background: #e5e7eb; border-radius: 4px; overflow: hidden; border: 1px solid #e5e7eb; }
+.calendar-cell { background: white; min-height: 110px; padding: 6px; position: relative; }
+.calendar-cell.today { background: #fdfcf0; }
+.calendar-cell.today .day-number { color: white; background: #eb5757; border-radius: 50%; width: 22px; height: 22px; display: inline-flex; items-center; justify-content: center; margin-right: -4px; }
+
+/* Graph & Cabinet Styles */
+#graph-container { display: flex; height: calc(100vh - 60px); position: relative; }
+#mynetwork { flex: 1; outline: none; background: #fdfdfd; }
+#file-cabinet { width: 300px; background: #f7f7f5; border-left: 1px solid #e5e7eb; display: flex; flex-direction: column; box-shadow: -2px 0 5px rgba(0,0,0,0.02); z-index: 20; }
+.cabinet-item { padding: 8px 12px; margin: 4px 8px; background: white; border: 1px solid #e5e7eb; border-radius: 4px; font-size: 13px; cursor: grab; user-select: none; transition: all 0.2s; display: flex; justify-content: space-between; items-center; }
+.cabinet-item:hover { border-color: #a0a0a0; transform: translateY(-1px); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+.cabinet-item:active { cursor: grabbing; }
+.cabinet-header { padding: 16px; border-bottom: 1px solid #e5e7eb; background: white; }
+.cabinet-section-title { font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; margin: 12px 8px 4px; letter-spacing: 0.5px; }
+
+/* Drag & Drop Visuals */
+.dragging { opacity: 0.5; }
+.hidden { display: none; }
+
+#context-menu {
+    display: none;
+    position: absolute;
+    z-index: 1000;
+    width: 180px;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 4px 0;
+    overflow: hidden;
+}
+
+.context-menu-item {
+    padding: 8px 16px;
+    font-size: 12px;
+    color: #37352f;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: background 0.1s;
+}
+
+.context-menu-item:hover {
+    background-color: #f3f4f6;
+    color: #2563eb;
+}
+
+.context-menu-item i {
+    width: 20px;
+    margin-right: 8px;
+    color: #9ca3af;
+}
+
+.context-menu-separator {
+    height: 1px;
+    background-color: #e5e7eb;
+    margin: 4px 0;
+}
+
+/* [style.css] */
+
+/* Notice Component */
+.notice-block {
+    display: flex;
+    align-items: center;
+    background-color: #eff6ff; /* blue-50 */
+    border: 1px solid #bfdbfe; /* blue-200 */
+    border-radius: 6px;
+    padding: 12px;
+    margin: 8px 0;
+}
+
+.notice-icon {
+    font-size: 1.2em;
+    color: #3b82f6; /* blue-500 */
+    margin-right: 12px;
+}
+
+.notice-body {
+    flex: 1;
+}
+
+.notice-cond {
+    font-size: 10px;
+    font-weight: 700;
+    color: #93c5fd; /* blue-300 */
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 2px;
+}
+
+.notice-text {
+    font-size: 14px;
+    font-weight: 500;
+    color: #1e3a8a; /* blue-900 */
+}
+
+/* Notice Builder (Empty State) */
+.notice-builder {
+    background: #f9fafb;
+    border: 1px dashed #d1d5db;
+    padding: 12px;
+    border-radius: 6px;
+    margin: 10px 0;
+}
+
+/* 时间追踪器编辑模式样式 */
+.time-edit-form {
+    animation: slideIn 0.2s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 悬停效果增强 */
+[data-activity] {
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+[data-activity]:hover {
+    transform: translateX(2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* 删除按钮动画 */
+[data-activity] button {
+    transition: all 0.2s ease;
+}
+
+[data-activity] button:hover {
+    transform: scale(1.1);
+}
+
+/* 编辑输入框样式 */
+#edit-activity-name,
+#edit-activity-hours {
+    transition: all 0.2s ease;
+}
+
+#edit-activity-name:focus,
+#edit-activity-hours:focus {
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+/* 图标隐藏/显示动画 */
+.page-icon-wrapper {
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+#current-icon-display,
+#icon-hidden-indicator {
+    transition: all 0.3s ease;
+}
+
+#icon-hidden-indicator {
+    opacity: 0.7;
+    filter: grayscale(50%);
+}
+
+/* 按钮悬停效果 */
+button:hover #icon-visibility-icon {
+    transform: scale(1.1);
+}
+
+
+
+/* 移动端适配 */
+@media (max-width: 640px) {
+    #icon-visibility-text {
+        display: none;
+    }
+    
+    .page-header-wrapper .flex.items-end {
+        flex-direction: column;
+        align-items: flex-start !important;
+    }
+    
+    .page-header-wrapper .flex.items-end .flex.items-center {
+        margin-top: 8px;
+        align-self: flex-end;
+    }
+}
+
+/* static/css/calc.css */
+
+/* ===== Calc 组件样式 ===== */
+/* calc-chip 样式 - 带阴影背景，可被覆盖颜色 */
+/* 基础样式 - 背景和阴影固定 */
+.calc-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    
+    /* 背景和阴影固定，不随颜色变化 */
+    background: #f3f4f6;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05), inset 0 1px 2px rgba(255,255,255,0.8);
+    border: 1px solid #e5e7eb;
+    border-radius: 20px;
+    
+    font-family: 'Fira Code', monospace;
+    font-size: 0.9em;
+    margin: 0 2px;
+    transition: all 0.2s;
+    
+    /* 文字颜色从父节点继承 */
+    color: inherit;
+}
+
+.calc-chip:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transform: translateY(-1px);
+}
+
+/* 所有子元素都继承颜色 */
+.calc-chip *,
+.calc-chip-var,
+.calc-chip-expr,
+.calc-chip-result,
+.calc-chip-unit {
+    color: inherit;
+}
+
+/* 保持视觉区分度（通过背景、粗细，不是颜色） */
+.calc-chip-var {
+    font-weight: 600;
+    background: rgba(255,255,255,0.5);
+    padding: 2px 6px;
+    border-radius: 12px;
+}
+
+.calc-chip-expr {
+    background: white;
+    padding: 2px 6px;
+    border-radius: 12px;
+    border: 1px dashed #d1d5db;
+}
+
+.calc-chip-result {
+    font-weight: 700;
+    background: rgba(255,255,255,0.5);
+    padding: 2px 6px;
+    border-radius: 12px;
+}
+
+.calc-chip-unit {
+    opacity: 0.7;
+    font-size: 0.85em;
+}
+
+/* ===== 颜色工具类 ===== */
+.text-red { color: #ef4444; }
+.text-blue { color: #3b82f6; }
+.text-green { color: #10b981; }
+.text-yellow { color: #f59e0b; }
+.text-purple { color: #8b5cf6; }
+.text-pink { color: #ec4899; }
+.text-indigo { color: #6366f1; }
+.text-gray { color: #6b7280; }
+.text-orange { color: #f97316; }
+
+/* 暗色模式支持 */
+@media (prefers-color-scheme: dark) {
+    .calc-chip {
+        background: #2d2d2d;
+        border-color: #404040;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.3), inset 0 1px 2px rgba(255,255,255,0.05);
+    }
+    
+    .calc-chip-var {
+        background: rgba(255,255,255,0.1);
+    }
+    
+    .calc-chip-expr {
+        background: #1f2937;
+        border-color: #4b5563;
+    }
+    
+    .calc-chip-result {
+        background: rgba(255,255,255,0.1);
+    }
+    
+    /* 暗色模式下的颜色 */
+    .text-red { color: #f87171; }
+    .text-blue { color: #60a5fa; }
+    .text-green { color: #34d399; }
+}
+
+/* calc-builder 样式 - 空的编辑器 */
+.calc-builder {
+    padding: 12px;
+    border: 2px dashed #818cf8;
+    border-radius: 8px;
+    background: #eef2ff;
+    margin: 8px 0;
+    max-width: 400px;
+}
+
+.calc-builder-header {
+    font-size: 11px;
+    font-weight: bold;
+    color: #4f46e5;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+
+.calc-builder-body {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.calc-builder-select {
+    flex: 1;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    padding: 6px;
+    font-size: 12px;
+    background: white;
+}
+
+.calc-builder-input {
+    flex: 1;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    padding: 6px;
+    font-size: 12px;
+    font-family: 'Fira Code', monospace;
+}
+
+.calc-builder-btn {
+    width: 100%;
+    background: #4f46e5;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.calc-builder-btn:hover {
+    background: #4338ca;
+    transform: translateY(-1px);
+}
+
+/* 媒体上传占位符 */
+.media-placeholder {
+    border: 2px dashed #d1d5db;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: #f9fafb;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.media-placeholder:hover {
+    border-color: #4f46e5;
+    background: #eef2ff;
+}
+
+/* TODO 组件样式 */
+/* 容器样式 */
+.todo-container {
+    margin: 1rem 0;
+    padding: 0.5rem 0;
+    background: white;
+    border-radius: 8px;
+}
+
+.todo-item {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid #f0f0f0;
+    transition: all 0.2s ease;
+}
+
+.todo-item:hover {
+    background-color: #f9f9f8;
+}
+
+.todo-checkbox {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;  /* 从20px改到28px */
+    height: 28px; /* 从20px改到28px */
+    margin-right: 16px; /* 可以适当增加右边距 */
+    border-radius: 6px; /* 圆角也可以稍微调大 */
+    cursor: pointer;
+    user-select: none;
+    font-size: 20px; /* 图标字体大小也要相应增大 */
+    transition: all 0.2s ease;
+}
+
+.todo-item-pending .todo-checkbox {
+    color: #9ca3af;
+    border: 1.5px solid #d1d5db;
+    border-radius: 50%;
+}
+
+.todo-item-done .todo-checkbox {
+    color: #10b981;
+    border: none;
+}
+
+.todo-item-cancelled .todo-checkbox {
+    color: #ef4444;
+    border: none;
+}
+
+.todo-item-pending .todo-text {
+    color: #1f2937;
+}
+
+.todo-item-done .todo-text {
+    color: #10b981;
+    text-decoration: line-through;
+}
+
+.todo-item-cancelled .todo-text {
+    color: #ef4444;
+    text-decoration: line-through;
+    opacity: 0.7;
+}
+
+.todo-time {
+    margin-left: 12px;
+    padding: 2px 8px;
+    background: #fff7ed;
+    color: #f97316;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.todo-time:hover {
+    background: #ffedd5;
+}
+
+.todo-link {
+    margin-left: 8px;
+    padding: 2px 8px;
+    background: #eef2ff;
+    color: #6366f1;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.todo-link.missing {
+    background: #fef2f2;
+    color: #ef4444;
+    text-decoration: line-through;
+}
+
+.todo-link:hover {
+    background: #e0e7ff;
+}
+
+/* 编辑模式下的 TODO 块 */
+.markdown-editor .todo-container {
+    opacity: 0.5;
+    pointer-events: none;
+    filter: grayscale(0.5);
+}
+
+/* static/css/style.css 新增 */
+
+.sidebar-node.drag-over {
+    background-color: #e0f2fe;
+    border: 2px dashed #0284c7;
+}
+
+.sidebar-node .dragging {
+    opacity: 0.5;
+    background-color: #f3f4f6;
+}
+
+.children-container {
+    margin-left: 16px;
+    border-left: 1px dashed #e5e7eb;
+}
+
+.tag-filter.active {
+    background-color: #e0e7ff;
+    border-color: #6366f1;
+}
+
+/* 折叠动画 */
+.children-container {
+    transition: all 0.2s ease;
+}
+
+.folder-toggle {
+    cursor: pointer;
+    user-select: none;
+}

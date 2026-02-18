@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ current_page.title }}</title>
+    <!-- Tailwind CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tailwind.min.css') }}">
+    <!-- Chart.js -->
+    <script src="{{ url_for('static', filename='js/lib/chart.umd.min.js') }}"></script>
+    <!-- Vis.js (Graph) -->
+    <script src="{{ url_for('static', filename='js/lib/vis-network.min.js') }}"></script>
+    <!-- Marked.js (Markdown) -->
+    <script src="{{ url_for('static', filename='js/lib/marked.min.js') }}"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS   --> 
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="flex h-screen overflow-hidden text-sm">
+
+    <!-- Data Injection for JS -->
+    <script>
+    try {
+        // 1. 基础页面信息 - 使用最安全的方式
+        window.pageId = {{ current_page.id | default(0) }};
+        window.pageType = "{{ current_page.page_type | default('') }}";
+        
+        // 2. 各模块数据 - 使用默认值
+        window.trackerLog = {{ tracker_log | default('{}') | safe }};
+        window.calendarEvents = {{ calendar_events | default('[]') | safe }};
+        window.graphConfig = {{ graph_config | default('{}') | safe }};
+        window.globalNotices = {{ global_notices | default('[]') | safe }};
+        
+        // 3. 所有页面数据 - 使用最稳定的方式
+        window.allPagesData = [];
+        {% if pages %}
+            {% for p in pages %}
+            window.allPagesData.push({
+                id: {{ p.id | default(0) }},
+                title: "{{ p.title | default('') | escape }}",
+                icon: "{{ p.icon | default('📄') | escape }}",
+                type: "{{ p.page_type | default('doc') | escape }}",
+                content: {{ p.content | default('') | tojson | safe }},
+                is_pinned: {{ 'true' if p.is_pinned else 'false' }}
+            });
+            {% endfor %}
+        {% endif %}
+        
+        
+    } catch(e) {
+        console.error('❌ 数据注入出错:', e);
+        // 设置默认值，防止后续JS报错
+        window.pageId = 0;
+        window.pageType = '';
+        window.trackerLog = {};
+        window.calendarEvents = [];
+        window.graphConfig = {};
+        window.globalNotices = [];
+        window.allPagesData = [];
+    }
+    </script>
+
+    <!-- Sidebar -->
+    <aside class="w-64 bg-[#fbfbfa] border-r border-gray-300 flex flex-col z-40 shadow-sm flex-shrink-0">
+        <!-- Logo 区域 - 保持不变 -->
+        <div class="p-2">
+            <div class="flex items-center space-x-1 font-bold text-gray-700 pl-2">
+                <div class="w-12 h-7 bg-black text-white rounded flex items-center justify-center text-base">Notio</div>
+                <span class="text-base tracking-tight text-black">bsidian</span>
+            </div>
+        </div>
+        
+        <!-- 侧边栏内容区域 - 包含控制栏和页面列表 -->
+        <div class="flex-1 overflow-y-auto" id="sidebar-container">
+            <!-- 控制栏会通过 JS 动态插入到这里（在 #sidebar-container 内，但不在 #sidebar-content 内） -->
+            <div class="space-y-1" id="sidebar-content">
+                <!-- 页面列表会动态渲染到这里 -->
+            </div>
+        </div>
+            <div class="p-3 border-t bg-gray-50/50 space-y-2">
+            <button onclick="createPage('doc')" class="w-full text-left px-3 py-1.5 text-gray-500 hover:bg-gray-200 hover:text-gray-800 rounded text-xs transition-all font-medium">New Doc</button>
+            <button onclick="createPage('tracker')" class="w-full text-left px-3 py-1.5 text-gray-500 hover:bg-gray-200 hover:text-gray-800 rounded text-xs transition-all font-medium">tracker</button>
+            <button onclick="createPage('calendar')" class="w-full text-left px-3 py-1.5 text-gray-500 hover:bg-gray-200 hover:text-gray-800 rounded text-xs transition-all font-medium">calendar</button>
+            <button onclick="createPage('graph')" class="w-full text-left px-3 py-1.5 text-gray-500 hover:bg-gray-200 hover:text-gray-800 rounded text-xs transition-all font-medium">relation-graph</button>
+            <div class="border-t border-gray-200 my-2 pt-2"></div>
+                <button id="analytics-sidebar-btn" onclick="window.Analytics?.openPanel ? window.Analytics.openPanel() : alert('calc dashboard loading!')" 
+                        class="w-full text-left px-3 py-1.5 text-indigo-600 hover:bg-indigo-50 hover:text-indigo-800 rounded text-xs transition-all font-medium">
+                    <i class="fas fa-chart-pie mr-2"></i> calc dashboard
+                </button>
+            </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    
+    <div class="flex-1 main-scroll-area bg-white relative">
+        
+        <!-- Only show Cover/Icon/Title for Non-Graph Pages -->
+        {% if current_page.page_type != 'graph' %}
+        <div id="cover-area" class="cover-container {{ current_page.cover if current_page.cover else 'h-16 bg-white border-b border-gray-50' }} transition-all duration-500 ease-in-out">
+            {% if current_page.cover %}
+            <button onclick="changeCover('')" class="absolute top-4 right-6 bg-white/90 hover:bg-white px-3 py-1 rounded shadow-sm text-[10px] font-bold uppercase tracking-wider text-gray-500 transition-all">Remove Cover</button>
+            {% endif %}
+        </div>
+
+        <div class="max-w-4xl mx-auto w-full px-12 sm:px-24 pb-40 relative">
+            <div class="page-header-wrapper">
+                <div class="page-icon-wrapper">
+                    <div id="current-icon-display" class="text-7xl hover:scale-105 rounded-2xl p-2 cursor-pointer transition-transform duration-200 bg-white shadow-lg border border-gray-100 select-none" onclick="updateIcon()">{{ current_page.icon }}</div>
+                </div>
+                
+                <div class="flex items-end justify-between group pt-4">
+                    <input id="title" class="text-4xl font-extrabold w-full border-none outline-none bg-transparent placeholder-gray-200 text-gray-800" value="{{ current_page.title }}" oninput="saveMeta()" spellcheck="false">
+                    {% if not current_page.cover %}
+                    <button onclick="changeCover('bg-gradient-to-r from-indigo-100 via-purple-100 to-pink-100')" class="opacity-0 group-hover:opacity-100 text-[11px] font-bold text-gray-400 hover:text-indigo-500 transition-all flex-shrink-0 mb-2">ADD COVER</button>
+                    {% endif %}
+                </div>
+                <div class="h-[1px] w-full bg-gray-100 mt-4 mb-10"></div>
+            </div>
+
+            <!-- Modules -->
+        <!-- Only show Cover/Icon/Title for Non-Graph Pages -->
+        {% if current_page.page_type == 'tracker' %}
+        <div class="notion-block shadow-sm">
+            <!-- 日期导航 -->
+            <div class="flex items-center justify-between border-b border-gray-100 pb-4 mb-6">
+                <button onclick="changeDate(-1)" class="p-2 hover:bg-gray-100 rounded-full transition-colors">◀</button>
+                <div class="flex flex-col items-center">
+                    <span class="text-lg font-bold text-gray-700" id="tracker-date-display"></span>
+                    <input type="date" id="tracker-date-picker" class="mt-1 border-none bg-gray-50 rounded px-2 py-0.5 text-[10px] font-bold text-gray-400 uppercase">
+                </div>
+                <button onclick="changeDate(1)" class="p-2 hover:bg-gray-100 rounded-full transition-colors">▶</button>
+            </div>
+            
+            <!-- 上部分：时间追踪 + 饼图（左右结构） -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                <!-- 左侧：时间追踪表单和列表 (占2列) -->
+                <div class="lg:col-span-2 space-y-4">
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                        <h3 class="text-xs font-bold text-gray-400 mb-3 uppercase tracking-widest">⏱️ tracker diary</h3>
+                        <div class="flex flex-col space-y-2">
+                            <input id="input-activity" type="text" placeholder="活动名称" class="border border-gray-200 rounded px-3 py-2 outline-none focus:border-indigo-400">
+                            <div class="flex space-x-2">
+                                <input id="input-hours" type="number" step="0.5" placeholder="小时" class="flex-1 border border-gray-200 rounded px-3 py-2 outline-none focus:border-indigo-400">
+                                <button onclick="addTimeEntry()" class="bg-indigo-600 text-white px-6 rounded font-bold hover:bg-indigo-700">add</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="time-entries-list" class="space-y-2 max-h-60 overflow-y-auto pr-2"></div>
+                    
+                    <div class="pt-2 border-t border-gray-100 flex justify-between text-xs font-bold">
+                        <span class="text-gray-400">total: <span id="total-tracked" class="text-indigo-600">0h</span></span>
+                        <span class="text-gray-400">unrecorded: <span id="total-unknown" class="text-rose-500">24h</span></span>
+                    </div>
+                </div>
+                
+                <!-- 右侧：饼图 (占1列) -->
+                <div class="lg:col-span-1 flex flex-col items-center justify-center">
+                    <div class="w-full max-w-[200px]">
+                        <canvas id="dayChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 下部分：日记 (全宽) -->
+            <div class="border-t border-gray-200 pt-6 mt-2">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest">diary</h3>
+                    <div class="flex items-center space-x-3">
+                        <span class="text-xs text-gray-400" id="diary-save-status">saved</span>
+                        <button onclick="toggleDiaryEdit()" class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-1 rounded" id="diary-edit-btn">
+                            edit
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 快捷模板按钮 -->
+                <div class="flex flex-wrap gap-2 mt-3">
+                    <button onclick="insertDiaryTemplate('gratitude')" class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-1.5 rounded-full">thanks</button>
+                    <button onclick="insertDiaryTemplate('review')" class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-1.5 rounded-full">look back</button>
+                    <button onclick="insertDiaryTemplate('plan')" class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-1.5 rounded-full">plan</button>
+                    <button onclick="insertDiaryTemplate('idea')" class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-1.5 rounded-full">idea</button>
+                </div>
+                <!-- 日记容器 - 使用notion-block类 -->
+                <div id="diary-container" class="notion-block min-h-[200px] p-4 bg-white border border-gray-100 rounded-lg">
+                    <!-- 日记内容会通过JS渲染到这里 -->
+                </div>
+                
+
+            </div>
+        </div>
+        {% endif %}
+
+            <!-- B. Global Calendar Module -->
+            {% if current_page.page_type == 'calendar' %}
+            <div class="notion-block shadow-sm">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h2 class="text-xl font-extrabold text-gray-800" id="calendar-title">calendar</h2>
+                        <p class="text-xs text-gray-400 font-medium">Format: @YYYY.MM.DD HH:MM [event]</p>
+                    </div>
+                    <div id="calendar-controls" class="flex items-center space-x-1 bg-gray-50 p-1 rounded-md border border-gray-200">
+                    </div>
+                </div>
+                
+                <div id="calendar-week-header" class="grid grid-cols-7 text-center text-[10px] font-black text-gray-300 mb-2 tracking-widest uppercase">
+                    <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+                </div>
+                
+                <div id="calendar-view" class="calendar-grid bg-gray-100 transition-all"></div>
+            </div> 
+            {% endif %}
+
+            <!-- C. Markdown / Document Module -->
+            {% if current_page.page_type == 'doc' %}
+            <div class="fixed top-4 right-4 z-50 flex space-x-2" id="simple-doc-toolbar">
+                <button onclick="insertTodoBlock()" 
+                        class="bg-white border border-gray-200 hover:border-green-400 hover:text-green-600 hover:bg-green-50 px-4 py-2 rounded-lg shadow-md text-xs font-bold transition-all flex items-center space-x-2">
+                    <i class="fas fa-check-square text-green-500"></i>
+                    <span>insert TODO</span>
+                </button>
+                <button id="edit-toggle" onclick="toggleEditMode()" 
+                        class="bg-white border border-gray-200 hover:border-indigo-400 hover:text-indigo-600 hover:bg-indigo-50 px-4 py-2 rounded-lg shadow-md text-xs font-bold transition-all flex items-center space-x-2">
+                    <i class="fas fa-edit text-indigo-500"></i>
+                    <span id="edit-toggle-text">edit mode</span>
+                </button>
+            </div>
+            <div class="notion-block relative group border-gray-100 shadow-sm min-h-[400px]">
+                <div id="markdown-preview" class="markdown-preview text-gray-800 p-2"></div>
+                <textarea id="markdown-source" class="markdown-editor hidden" oninput="saveContent(this.value)">{{ current_page.content }}</textarea>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- D. Graph View (Full Screen with Cabinet) -->
+        {% if current_page.page_type == 'graph' %}
+        <!-- 添加标题栏 - 紧贴侧边栏 -->
+        <div style="flex; top: 0; left: 192px; right: 280px; height: 60px; 
+            background: rgba(255, 255, 255, 0.6); 
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-bottom: 1px solid rgba(229, 231, 235, 0.3);
+            z-index: 30; 
+            display: flex; 
+            align-items: center; 
+            padding: 0 20px;">
+            <div class="flex items-center space-x-2">
+                <input id="title" 
+                       class="text-2xl font-extrabold border-none outline-none bg-transparent text-gray-800" 
+                       value="{{ current_page.title }}" 
+                       oninput="saveMeta()" 
+                       spellcheck="false"
+                       style="width: 300px;">
+            </div>
+        </div>
+        <div id="graph-container">
+            <div id="mynetwork"></div>
+            <div id="context-menu">
+                <div class="context-menu-item" onclick="handleMenuAction('hide')">
+                    <i class="fas fa-eye-slash"></i> Hide node (move back to the filing cabinet)
+                </div>
+                <div class="context-menu-separator"></div>
+                <div class="context-menu-item" onclick="handleMenuAction('connect')">
+                    <i class="fas fa-link"></i> Connect...
+                </div>
+                <div class="context-menu-item" onclick="handleMenuAction('disconnect')">
+                    <i class="fas fa-unlink"></i> Disconnect...
+                </div>
+                <div class="context-menu-separator"></div>
+                <div class="context-menu-item" onclick="handleMenuAction('goto')">
+                    <i class="fas fa-external-link-alt"></i> jump to 
+                </div>
+            </div>
+            
+            <div id="file-cabinet">
+                <div class="cabinet-header">
+                    <h3 class="font-bold text-gray-700 text-sm mb-2">📂 file cabinet</h3>
+                    <div class="relative">
+                        <input id="cabinet-search" type="text" placeholder="search .." oninput="renderCabinet()" class="w-full border border-gray-200 rounded px-2 py-1.5 text-xs outline-none focus:border-indigo-500">
+                        <i class="fas fa-search absolute right-2 top-2 text-gray-300 text-xs"></i>
+                    </div>
+                    <button onclick="resetGraph()" class="text-[10px] bg-red-50 text-red-500 px-2 py-1 rounded hover:bg-red-100 border border-red-100">
+                    <i class="fas fa-trash-alt mr-1"></i>Reset Canvas
+                    </button>
+                    <div class="flex mt-2 space-x-1">
+                        <button onclick="setCabinetSort('name')" class="flex-1 bg-white border border-gray-200 text-[10px] py-1 rounded hover:bg-gray-50">by name</button>
+                        <button onclick="setCabinetSort('tag')" class="flex-1 bg-white border border-gray-200 text-[10px] py-1 rounded hover:bg-gray-50">by tags</button>
+                    </div>
+                </div>
+                <div id="cabinet-content" class="flex-1 overflow-y-auto p-2" ondragover="allowDrop(event)" ondrop="dropToCabinet(event)"></div>
+                <div class="p-2 border-t text-[10px] text-gray-400 text-center">Drag and drop files onto the canvas to display relationships</div>
+            </div>
+        </div>
+        {% endif %}
+
+
+    <!-- Load Custom JS  -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/sidebar.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/analytics.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/websocket.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/parser.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/tracker.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/calendar.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/graph.js') }}"></script>
+    
+</body>
+</html>
