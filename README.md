@@ -90,8 +90,7 @@
 - **极简自托管** —— 一条命令 python Notiobsidian.py 就能跑
 - **暗黑模式友好** + Tailwind 美化（手机也能凑合看）
 
-## 📸 截图预览（替换成你本地的真实截图！）
-
+## 📸 截图预览
 <p align="center">
   <img src="./screenshot/test (1).png" alt="Sidebar & Dashboard" width="45%"/>
   <img src="./screenshot/test (2).png" alt="Daily Tracker with Charts" width="45%"/>
@@ -218,7 +217,7 @@
 - **Minimal Self-hosting** —— One command: python Notiobsidian.py
 - **Dark Mode Friendly** + Tailwind styling (mobile-friendly enough)
 
-## 📸 Screenshots (Replace with your actual screenshots!)
+## 📸 Screenshots 
 
 <p align="center">
   <img src="./screenshot/test (1).png" alt="Sidebar & Dashboard" width="45%"/>
